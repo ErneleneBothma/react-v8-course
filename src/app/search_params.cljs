@@ -13,7 +13,8 @@
         (.then (fn [response]
                  (.json response)))
         (.then (fn [json-data]
-                 (set-pets! json-data))))))
+                 ;;(js/console.log json-data)
+                 (set-pets! (:pets (js->clj json-data :keywordize-keys true))))))))
 
 
 (defui search-parameters [_]
@@ -21,9 +22,10 @@
         [animal set-animal!]     (uix/use-state "")
         [breed set-breed!]       (uix/use-state "")
         [pets set-pets!]         (uix/use-state [])]
+(println "this is pets" pets)
     (uix/use-effect
         (fn []
-          (println (request-pets set-pets! animal location breed)))
+          (request-pets set-pets! animal location breed))
         [animal])
 
     ($ :div {:className "search-params"}
