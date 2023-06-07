@@ -9,7 +9,7 @@
         json   (.then result (fn [response] (.json response)))]
   (set-breed-list! [])
   (set-status! "loading")
-  (set-local-cache! (or json []))
+  (set-local-cache! (or json []))P
   (set-breed-list! (get local-cache animal))
   (set-status! "loaded")))
 
