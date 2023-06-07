@@ -1,7 +1,7 @@
 (ns app.search-params
   (:require
     [uix.core :as uix :refer [defui $]]
-    [app.pet :as pet :refer [pet]]
+    [app.results :as results :refer [results]]
     [app.use-breed-list :as use-breed-list :refer [use-breed-list]]
     [uix.dom]))
 
@@ -69,9 +69,7 @@
                (map (fn [breed] ($ :option {:key breed :value breed} breed)) breeds)))
 
           ($ :button "Submit"))
+       (println "this is pets in params" pets)
+            ($ results {:pets pets})
 
-       (map (fn [dier]
-              ($ pet {:name (:name dier) :breed (:breed dier) :animal (:animal dier) :key (:id dier)}))
-            pets)
        )))
-(empty? [])
