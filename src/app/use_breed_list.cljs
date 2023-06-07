@@ -2,16 +2,20 @@
    (:require
     [uix.core :as uix :refer [defui $]]
     [uix.dom]))
-(def local-cache {})
 
-(defn request-breed-list [animal set-breed-list! set-status! set-local-cache!]
-  (let [result (js/fetch (str "http://pets-v2.dev-apis.com/breeds?animal=$" animal))
-        json   (.then result (fn [response] (.json response)))]
-  (set-breed-list! [])
+
+(defn request-breed-list [animal set-breed-list! set-status! local-cache set-local-cache!]
   (set-status! "loading")
-  (set-local-cache! (or json []))P
-  (set-breed-list! (get local-cache animal))
-  (set-status! "loaded")))
+  (let [result (js/fetch (str "http://pets-v2.dev-apis.com/breeds?animal=" animal))]
+    (-> result
+        (.then (fn [response]
+                 (.json response)))
+    (.then (fn [json]
+             (let [json-data (js->clj json :keywordize-keys true)]
+             (set-breed-list! (or (:breeds json-data) []))
+             (set-local-cache! (assoc local-cache animal (:breeds json-data)))
+             (set-status! "loaded")))))))
+
 
 
 (defn use-breed-list [animal]
@@ -19,9 +23,10 @@
         [status, set-status!]          (uix/use-state "unloaded")
         [local-cache set-local-cache!] (uix/use-state {})]
 (uix/use-effect
-(cond
+(fn []
+  (cond
   (empty? animal)          (set-breed-list! [])
   (get local-cache animal) (set-breed-list! (get local-cache animal))
-  :else                    (request-breed-list animal set-breed-list! set-status! set-local-cache!))
+  :else                    (request-breed-list animal set-breed-list! set-status! local-cache set-local-cache!)))
 [animal])
 [breed-list status]))

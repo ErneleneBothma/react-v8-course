@@ -2,10 +2,11 @@
   (:require
     [uix.core :as uix :refer [defui $]]
     [app.pet :as pet :refer [pet]]
+    [app.use-breed-list :as use-breed-list :refer [use-breed-list]]
     [uix.dom]))
 
 (def animals ["bird", "cat", "dog", "rabbit", "reptile"])
-(def breeds [])
+
 
 (defn request-pets [set-pets! animal location breed]
   (let [result (js/fetch (str "http://pets-v2.dev-apis.com/pets?animal=" animal "&location=" location "&breed=" breed))]
@@ -21,8 +22,12 @@
   (let [[location set-location!] (uix/use-state "")
         [animal set-animal!]     (uix/use-state "")
         [breed set-breed!]       (uix/use-state "")
-        [pets set-pets!]         (uix/use-state [])]
-(println "this is pets" pets)
+        [pets set-pets!]         (uix/use-state [])
+        breeds (first (use-breed-list animal))]
+(println "this is animal" animal)
+(println "get breed list" (use-breed-list animal))
+   (println "this is breeds" breeds)
+;;(println "this is pets" pets)
     (uix/use-effect
         (fn []
           (request-pets set-pets! animal location breed))
@@ -47,14 +52,14 @@
                                 (set-animal! (.-value (.-target %)))
                                 (set-breed! "")
                                 )}
-               (concat [($ :option {:value nil} nil)]
+               (concat [($ :option {:key "no option"})]
                        (map (fn [animal] ($ :option {:key animal :value animal} animal)) animals))))
 
           ($ :label {:htmlFor breed}
             "Breed"
             ($ :select
                {:id          "breed"
-                :disabled    (empty? breed);;(= (count breeds) 0)
+                :disabled    (empty? breeds);;(= (count breeds) 0)
                 :value       breed
                 :placeholder "Breed"
                 :onChange    #(set-breed!   (.-value (.-target %)))}
@@ -66,3 +71,4 @@
               ($ pet {:name (:name dier) :breed (:breed dier) :animal (:animal dier) :key (:id dier)}))
             pets)
        )))
+(empty? [])
