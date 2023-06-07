@@ -24,9 +24,9 @@
         [breed set-breed!]       (uix/use-state "")
         [pets set-pets!]         (uix/use-state [])
         breeds (first (use-breed-list animal))]
-(println "this is animal" animal)
-(println "get breed list" (use-breed-list animal))
-   (println "this is breeds" breeds)
+;;(println "this is animal" animal)
+;;(println "get breed list" (use-breed-list animal))
+  ;; (println "this is breeds" breeds)
 ;;(println "this is pets" pets)
     (uix/use-effect
         (fn []
@@ -35,6 +35,9 @@
 
     ($ :div {:className "search-params"}
        ($ :form
+          {:onSubmit #(do
+                              (.preventDefault %)
+                              (request-pets set-pets! animal location breed))}
           ($ :label {:htmlFor location}
             "Location"
             ($ :input {:id          "location"
