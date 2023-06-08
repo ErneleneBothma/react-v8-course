@@ -1,13 +1,14 @@
 (ns app.pet
   (:require
     [uix.core :as uix :refer [defui $]]
+    ["react-router-dom" :refer [Link]]
     [uix.dom]))
 
 (defui pet [{:keys [name animal breed images location id]}]
   (println "this is image" images)
 
   ($ :<>
-     ($ :a {:href (str "/details/" id)
+     ($ Link {:to (str "/details/" id)
             :className "pet"})
   ($ :div  {:className "img-container"}
        ($ :img {:src (if (empty? images)
