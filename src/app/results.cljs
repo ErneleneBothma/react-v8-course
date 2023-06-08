@@ -6,7 +6,7 @@
 
 (defui results [{:keys [pets]}]
   ($ :div  {:className "search"}
-     (println "this is pets in results" pets)
+     ;;(println "this is pets in results" pets)
      (if (empty? pets)
        ($ :h1 "No Pets Found")
        (map (fn [dier]

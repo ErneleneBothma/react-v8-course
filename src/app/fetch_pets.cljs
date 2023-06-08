@@ -3,7 +3,7 @@
    [shadow.cljs.modern :refer [js-await]]))
 
 (defn fetch-pets [context]
-(js/console.log context)
+;;(js/console.log context)
   (let [query (.-queryKey context)
         id    (aget query 1)
         _     (println "id" id)]

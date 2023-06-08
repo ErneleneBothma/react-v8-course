@@ -5,7 +5,7 @@
     [uix.dom]))
 
 (defui pet [{:keys [name animal breed images location id]}]
-  (println "this is image" images)
+  ;;(println "this is image" images)
 
   ($ :<>
      ($ Link {:to (str "/details/" id)
