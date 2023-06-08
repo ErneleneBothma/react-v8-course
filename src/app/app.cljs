@@ -3,18 +3,26 @@
     [uix.core :as uix :refer [defui $]]
     [uix.dom]
     ["react-router-dom" :refer [BrowserRouter Routes Route Link]]
+    ["@tanstack/react-query" :refer [QueryClient QueryClientProvider]]
     [app.details :as details :refer [details]]
-    [app.search-params :as search-params :refer [search-parameters] ]))
+    [app.search-params :as search-params :refer [search-parameters]]))
+
+(def query-client
+  (QueryClient
+   {:defualtOptions
+    {:queries {:staleTime js/Infinity
+               :cacheTime js/Infinity}}}))
 
 (defui app []
 ($ :div
 
       ($ BrowserRouter
-         ($ :header ;;"Adopt Me!"
-         ($ Link {:to "/"} "Adopt Me!" ))
-        ($ Routes
-          ($ Route {:path "/details/:id" :element [($ details)]})
-          ($ Route {:path "/" :element [($ search-parameters)]}))))
+         ($ QueryClientProvider {:client query-client}
+            ($ :header
+               ($ Link {:to "/"} "Adopt Me!" ))
+            ($ Routes
+               ($ Route {:path "/details/:id" :element [($ details)]})
+               ($ Route {:path "/" :element [($ search-parameters)]})))))
   )
 
 
