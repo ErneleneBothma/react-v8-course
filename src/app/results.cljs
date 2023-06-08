@@ -14,6 +14,7 @@
                       :breed (:breed dier)
                       :animal (:animal dier)
                       :key (:id dier)
+                      :id (:id dier)
                       :images (:images dier)
                       :location (str (:city dier) (:state dier))}))
             pets))))

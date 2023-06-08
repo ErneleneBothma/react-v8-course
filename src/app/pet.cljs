@@ -5,10 +5,10 @@
 
 (defui pet [{:keys [name animal breed images location id]}]
   (println "this is image" images)
-  #_($ :a ;;{:href "" #_($ detaills id )}
-     {:className "pet"}
-     )
-  ($ :div  {:className "pet"}
+
+  ($ :<>
+     ($ :a {:href (str "/details/" id)
+            :className "pet"})
   ($ :div  {:className "img-container"}
        ($ :img {:src (if (empty? images)
                     "http://pets-images.dev-apis.com/pets/none.jpg"
