@@ -1,7 +1,7 @@
 (ns app.fetch-pets)
 
-(defn fetch-pet [query]
-  (let [id     (aget query 1)
+(defn fetch-pets [query]
+  #_(let [id     (aget query 1)
         result (js/fetch (str "http://pets-v2.dev-apis.com/pets?id=" id))]
     (-> result
         (.then (fn [response]

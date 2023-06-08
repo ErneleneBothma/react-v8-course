@@ -10,7 +10,7 @@
   ($ :<>
      ($ Link {:to (str "/details/" id)
             :className "pet"})
-  ($ :div  {:className "img-container"}
+  ($ :div  {:className "image-container"}
        ($ :img {:src (if (empty? images)
                     "http://pets-images.dev-apis.com/pets/none.jpg"
                     (first images))

@@ -8,8 +8,8 @@
     [app.search-params :as search-params :refer [search-parameters]]))
 
 (def query-client
-  (QueryClient
-   {:defualtOptions
+  (QueryClient.
+   {:defaultOptions
     {:queries {:staleTime js/Infinity
                :cacheTime js/Infinity}}}))
 
@@ -22,7 +22,8 @@
                ($ Link {:to "/"} "Adopt Me!" ))
             ($ Routes
                ($ Route {:path "/details/:id" :element [($ details)]})
-               ($ Route {:path "/" :element [($ search-parameters)]})))))
+               ($ Route {:path "/" :element [($ search-parameters)]})))
+         ))
   )
 
 
