@@ -69,7 +69,7 @@
                (map (fn [breed] ($ :option {:key breed :value breed} breed)) breeds)))
 
           ($ :button "Submit"))
-       (println "this is pets in params" pets)
+       ;;(println "this is pets in params" pets)
             ($ results {:pets pets})
 
        )))
