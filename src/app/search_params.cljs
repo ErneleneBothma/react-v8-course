@@ -5,7 +5,8 @@
     [app.use-breed-list :as use-breed-list :refer [use-breed-list]]
     [app.fetch-search :as fetch-search :refer [fetch-search]]
     ["@tanstack/react-query" :refer [useQuery]]
-        [uix.dom]))
+    [uix.dom]
+    [app.adopted-pet-context :refer [adopted-pet-context]]))
 
 (def animals ["bird", "cat", "dog", "rabbit", "reptile"])
 
@@ -28,7 +29,8 @@
         [animal set-animal!] (uix/use-state "")
         breeds               (first (use-breed-list animal))
         result               (useQuery (clj->js ["search" request-params]) fetch-search)
-        is-loading           (.-isLoading result)]
+        is-loading           (.-isLoading result)
+        [adopted-pet _] (uix/use-context adopted-pet-context)]
 
 
     ($ :div {:className "search-params"}
@@ -41,6 +43,10 @@
                                         :location (or (.get form-data "location") "")
                                         :breed    (or (.get form-data "breed") "")}]
                          (set-request-params! obj)))}
+          (when adopted-pet
+            ($ :div (:className "pet image-container")
+               ($ :img {:src (first (:images adopted-pet))
+                        :alt (:name adopted-pet)})))
 
           ($ :label {:htmlFor "location"}
             "Location"
