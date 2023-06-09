@@ -27,28 +27,21 @@
 
         [animal set-animal!] (uix/use-state "")
         breeds               (first (use-breed-list animal))
-        result               (useQuery (clj->js ["search" request-params]) fetch-search)]
+        result               (useQuery (clj->js ["search" request-params]) fetch-search)
+        is-loading           (.-isLoading result)]
 
-    (when (and result (.-data result))
-      (let [pets (js->clj (.-pets (.-data result)) :keywordize-keys true)]
-;;(println "new results " result)
-;;(println "new PETS " pets)
 
-        ($ :div {:className "search-params"}
+    ($ :div {:className "search-params"}
        ($ :form
           {:onSubmit (fn [e]
                        (.preventDefault e)
                        ;; (js/console.log "this is data " (js/FormData. (.-target e) ))
                        (let [form-data (js/FormData. (.-target e))
-                             _         (js/console.log "this is form data" form-data)
-                             _ (js/console.log "this is animal from form" (.get form-data "animal"))
-                             _ (println "this is clojure form data"  (js->clj form-data :keywordize-keys true))
                              obj       {:animal   (or (.get form-data "animal") "")
                                         :location (or (.get form-data "location") "")
-                                        :breed    (or (.get form-data "breed") "")}
-                             _ (println "object from form" obj)]
-
+                                        :breed    (or (.get form-data "breed") "")}]
                          (set-request-params! obj)))}
+
           ($ :label {:htmlFor "location"}
             "Location"
             ($ :input {:id          "location"
@@ -71,12 +64,14 @@
             ($ :select
                {:id          "breed"
                 :disabled    (empty? breeds);;(= (count breeds) 0)
-                :name        "location"
+                :name        "breed"
                 :placeholder "Breed"}
                (map (fn [breed] ($ :option {:key breed :value breed} breed)) breeds)))
 
           ($ :button "Submit"))
+       (when (not is-loading)#_(and result (.-data result))
+             (let [pets (js->clj (.-pets (.-data result)) :keywordize-keys true)]
        ;;(println "this is pets in params" pets)
-       ($ results {:pets pets})
+               ($ results {:pets pets}))
 
-       )))))
+       ))))
