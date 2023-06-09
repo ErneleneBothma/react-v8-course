@@ -4,14 +4,14 @@
     [uix.dom]
     ["react-router-dom" :as p  :refer [useParams]]
     ["@tanstack/react-query" :refer [useQuery]]
-    [app.fetch-pets :as fetch-pets :refer [fetch-pets]]))
+    [app.fetch-pets :as fetch-pets :refer [fetch-pets]]
+    [app.modal :refer [modal]]))
 
 (defui details [_]
 (let [pet-id (.-id (useParams))
-      result (useQuery (clj->js ["details" pet-id]) fetch-pets)]
-  ;;(js/console.log "in details" result)
-;;(js/console.log "is it loading?" (.-isLoading result))
-;;(println "pets is " (js->clj (.-pets (.-data result)):keywordize-keys true))
+      result (useQuery (clj->js ["details" pet-id]) fetch-pets)
+      [show-modal set-show-modal!] (uix/use-state false)]
+
  (if (.-isLoading result)
     ($ :div {:className "loading-pane"}
        ($ :h2 {:className "loader"} "🌀"))
@@ -20,6 +20,16 @@
       ($ :div {:className "details"}
        ($ :div
           ($ :h1 (:name pet))
-          ($ :h2 (str (:animal pet) " - " (:breed pet) " - " (:city pet) " - " (:state pet))
-          ($ :button (str "Adopt " (:name pet)))
-          ($ :p (:description pet)))))))))
+          ($ :h2 (str (:animal pet) " - " (:breed pet) " - " (:city pet) " - " (:state pet)))
+          ($ :button {:onClick #(set-show-modal! true) }
+             (str "Adopt " (:name pet)))
+          ($ :p (:description pet))
+          (when show-modal
+            ;;(println show-modal )
+          ($ modal
+             ($ :div
+                ($ :h1 (str "Would you like to adopt" (:name pet)))
+                ($ :div {:className "buttons"}
+                   ($ :button "Yes")
+                   ($ :button {:onClick #(set-show-modal! false)}
+                      "No")))))))))))
