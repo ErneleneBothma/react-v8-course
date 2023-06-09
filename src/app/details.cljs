@@ -9,14 +9,14 @@
 (defui details [_]
 (let [pet-id (.-id (useParams))
       result (useQuery (clj->js ["details" pet-id]) fetch-pets)]
-  (js/console.log "in details" result)
+  ;;(js/console.log "in details" result)
 ;;(js/console.log "is it loading?" (.-isLoading result))
 ;;(println "pets is " (js->clj (.-pets (.-data result)):keywordize-keys true))
  (if (.-isLoading result)
     ($ :div {:className "loading-pane"}
        ($ :h2 {:className "loader"} "🌀"))
     (let [pet (first (js->clj (.-pets (.-data result)):keywordize-keys true))]
-      (println  "this is PET " pet)
+      ;;(println  "this is PET " pet)
       ($ :div {:className "details"}
        ($ :div
           ($ :h1 (:name pet))

@@ -3,7 +3,9 @@
     [uix.core :as uix :refer [defui $]]
     [app.results :as results :refer [results]]
     [app.use-breed-list :as use-breed-list :refer [use-breed-list]]
-    [uix.dom]))
+    [app.fetch-search :as fetch-search :refer [fetch-search]]
+    ["@tanstack/react-query" :refer [useQuery]]
+        [uix.dom]))
 
 (def animals ["bird", "cat", "dog", "rabbit", "reptile"])
 
@@ -19,57 +21,62 @@
 
 
 (defui search-parameters [_]
-  (let [[location set-location!] (uix/use-state "")
-        [animal set-animal!]     (uix/use-state "")
-        [breed set-breed!]       (uix/use-state "")
-        [pets set-pets!]         (uix/use-state [])
-        breeds (first (use-breed-list animal))]
-;;(println "this is animal" animal)
-;;(println "get breed list" (use-breed-list animal))
-  ;; (println "this is breeds" breeds)
-;;(println "this is pets" pets)
-    (uix/use-effect
-        (fn []
-          (request-pets set-pets! animal location breed))
-        [animal])
+  (let [ [request-params set-request-params!] (uix/use-state (clj->js {:location ""
+                                                                       :animal   ""
+                                                                       :breed    ""}))
 
-    ($ :div {:className "search-params"}
+        [animal set-animal!] (uix/use-state "")
+        breeds               (first (use-breed-list animal))
+        result               (useQuery (clj->js ["search" request-params]) fetch-search)]
+
+    (when (and result (.-data result))
+      (let [pets (js->clj (.-pets (.-data result)) :keywordize-keys true)]
+;;(println "new results " result)
+;;(println "new PETS " pets)
+
+        ($ :div {:className "search-params"}
        ($ :form
-          {:onSubmit #(do
-                              (.preventDefault %)
-                              (request-pets set-pets! animal location breed))}
-          ($ :label {:htmlFor location}
+          {:onSubmit (fn [e]
+                       (.preventDefault e)
+                       ;; (js/console.log "this is data " (js/FormData. (.-target e) ))
+                       (let [form-data (js/FormData. (.-target e))
+                             _         (js/console.log "this is form data" form-data)
+                             _ (js/console.log "this is animal from form" (.get form-data "animal"))
+                             _ (println "this is clojure form data"  (js->clj form-data :keywordize-keys true))
+                             obj       {:animal   (or (.get form-data "animal") "")
+                                        :location (or (.get form-data "location") "")
+                                        :breed    (or (.get form-data "breed") "")}
+                             _ (println "object from form" obj)]
+
+                         (set-request-params! obj)))}
+          ($ :label {:htmlFor "location"}
             "Location"
             ($ :input {:id          "location"
-                       :value       location
-                       :placeholder "Location"
-                       :onChange    #(set-location!   (.-value (.-target %)))}))
+                       :name        "location"
+                       :placeholder "Location"}))
 
-          ($ :label {:htmlFor animal}
+          ($ :label {:htmlFor "animal"}
             "Animal"
             ($ :select
                {:id          "animal"
                 :value       animal
                 :placeholder "Animal"
                 :onChange    #(do
-                                (set-animal! (.-value (.-target %)))
-                                (set-breed! "")
-                                )}
+                                (set-animal! (.-value (.-target %))))}
                (concat [($ :option {:key "no option"})]
                        (map (fn [animal] ($ :option {:key animal :value animal} animal)) animals))))
 
-          ($ :label {:htmlFor breed}
+          ($ :label {:htmlFor "breed"}
             "Breed"
             ($ :select
                {:id          "breed"
                 :disabled    (empty? breeds);;(= (count breeds) 0)
-                :value       breed
-                :placeholder "Breed"
-                :onChange    #(set-breed!   (.-value (.-target %)))}
+                :name        "location"
+                :placeholder "Breed"}
                (map (fn [breed] ($ :option {:key breed :value breed} breed)) breeds)))
 
           ($ :button "Submit"))
        ;;(println "this is pets in params" pets)
-            ($ results {:pets pets})
+       ($ results {:pets pets})
 
-       )))
+       )))))

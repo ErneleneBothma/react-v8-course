@@ -9,7 +9,7 @@
      ;;(println "this is pets in results" pets)
      (if (empty? pets)
        ($ :h1 "No Pets Found")
-       (map (fn [dier]
+       ($ :<> (map (fn [dier]
               ($ pet {:name (:name dier)
                       :breed (:breed dier)
                       :animal (:animal dier)
@@ -17,4 +17,4 @@
                       :id (:id dier)
                       :images (:images dier)
                       :location (str (:city dier) (:state dier))}))
-            pets))))
+            pets)))))

@@ -7,6 +7,7 @@
   (let [query (.-queryKey context)
         id    (aget query 1)
         _     (println "id" id)]
+
     (js-await [fetch-result (js/fetch (str "http://pets-v2.dev-apis.com/pets?id=" id))]
               (js/console.log "my result" fetch-result #_(js->clj fetch-result))
                               (if (.-ok fetch-result)
