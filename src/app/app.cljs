@@ -23,10 +23,10 @@
              ($ (.-Provider adopted-pet-context)
                 {:value adopted-pet}
                 ($ :header
-                   ($ Link {:to "/"} "Adopt Me!" )))
+                   ($ Link {:to "/"} "Adopt Me!" ))
              ($ Routes
                 ($ Route {:path "/details/:id" :element [($ details)]})
-                ($ Route {:path "/" :element [($ search-parameters)]})))
+                ($ Route {:path "/" :element [($ search-parameters)]}))))
           )))
   )
 

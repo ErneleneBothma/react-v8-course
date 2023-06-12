@@ -31,11 +31,12 @@
             ;;(println show-modal )
           ($ modal
              ($ :div
-                ($ :h1 (str "Would you like to adopt" (:name pet)))
+                ($ :h1 (str "Would you like to adopt " (:name pet)))
                 ($ :div {:className "buttons"}
                    ($ :button {:onClick #(do
                                            (set-adopted-pet! pet)
-                                           (navigate "/"))}
+                                           (navigate "/")
+                                           )}
                       "Yes")
                    ($ :button {:onClick #(set-show-modal! false)}
                       "No")))))))))))

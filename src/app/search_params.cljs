@@ -31,10 +31,13 @@
         result               (useQuery (clj->js ["search" request-params]) fetch-search)
         is-loading           (.-isLoading result)
         [adopted-pet _] (uix/use-context adopted-pet-context)]
+    (println "This is adopted pet " adopted-pet )
 
 
     ($ :div {:className "search-params"}
        ($ :form
+
+
           {:onSubmit (fn [e]
                        (.preventDefault e)
                        ;; (js/console.log "this is data " (js/FormData. (.-target e) ))
@@ -44,9 +47,10 @@
                                         :breed    (or (.get form-data "breed") "")}]
                          (set-request-params! obj)))}
           (when adopted-pet
-            ($ :div (:className "pet image-container")
+            ($ :<>
+               ($ :div {:className "pet image-container"}
                ($ :img {:src (first (:images adopted-pet))
-                        :alt (:name adopted-pet)})))
+                        :alt (:name adopted-pet)}))))
 
           ($ :label {:htmlFor "location"}
             "Location"
